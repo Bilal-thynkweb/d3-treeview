@@ -107,27 +107,29 @@
         nodeEnter
           .append("rect")
           .attr("rx", function (d) {
-            if (d.parent) return d.children || d._children ? 0 : 6;
-            return 10;
+            // if (d.parent) return d.children || d._children ? 0 : 6;
+            return 0;
           })
           .attr("ry", function (d) {
-            if (d.parent) return d.children || d._children ? 0 : 6;
-            return 10;
+            // if (d.parent) return d.children || d._children ? 0 : 6;
+            return 0;
           })
           .attr("stroke-width", function (d) {
-            return d.parent ? 1 : 0;
+            // return d.parent ? 1 : 0;
+            return 1;
           })
           .attr("stroke", function (d) {
-            return d.children || d._children
-              ? "rgb(3, 192, 220)"
-              : "rgb(38, 222, 176)";
+            // return d.children || d._children
+            //   ? "rgb(3, 192, 220)"
+            //   : "rgb(38, 222, 176)";
+            return "rgb(3, 192, 220)";
           })
-          .attr("stroke-dasharray", function (d) {
-            return d.children || d._children ? "0" : "2.2";
-          })
-          .attr("stroke-opacity", function (d) {
-            return d.children || d._children ? "1" : "0.6";
-          })
+          // .attr("stroke-dasharray", function (d) {
+          //   return d.children || d._children ? "0" : "2.2";
+          // })
+          // .attr("stroke-opacity", function (d) {
+          //   return d.children || d._children ? "1" : "0.6";
+          // })
           .attr("x", 0)
           .attr("y", -10)
           .attr("width", function (d) {
@@ -139,11 +141,11 @@
           .append("text")
           .style("fill", function (d) {
             if (d.parent) {
-              return d.children || d._children
-                ? "#ffffff"
-                : "rgb(38, 222, 176)";
+              // return d.children || d._children
+              //   ? "#ffffff"
+              //   : "rgb(38, 222, 176)";
             }
-            return "rgb(39, 43, 77)";
+            return "#ffffff";
           })
           .attr("dy", ".35em")
           .attr("x", function (d) {
@@ -175,7 +177,7 @@
           .remove();
 
         nodeExit.select("rect").style("opacity", 1e-6);
-        nodeExit.select("rect").attr("stroke-opacity", 1e-6);
+        // nodeExit.select("rect").attr("stroke-opacity", 1e-6);
         nodeExit.select("text").style("fill-opacity", 1e-6);
         var link = svg.selectAll("path.link").data(links, function (d) {
           return d.id;
@@ -233,8 +235,7 @@
             let newNode = d3.hierarchy(newNodeData, function (d) {
               return d.children;
             });
-            // newNode.depth = d.depth + 1;
-            // newNode.height = d.height - 1;
+
             d.height = 2;
             newNode.parent = d;
             newNode.descendants().forEach((node, index) => {
