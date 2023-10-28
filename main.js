@@ -8,3 +8,16 @@ function generateRandomId(length = 6) {
   // Return the complete ID.
   return `${padding}${randomBits}`;
 }
+
+// Assuming nodes is an array of your nodes
+let nodes = root.descendants();
+
+// Set a base height and an increment for each additional node
+let baseHeight = 500;
+let increment = 20;
+
+// Calculate the new height
+let newHeight = baseHeight + nodes.length * increment;
+
+// Update the tree size
+tree.size([newHeight, width]);

@@ -107,29 +107,17 @@
         nodeEnter
           .append("rect")
           .attr("rx", function (d) {
-            // if (d.parent) return d.children || d._children ? 0 : 6;
             return 0;
           })
           .attr("ry", function (d) {
-            // if (d.parent) return d.children || d._children ? 0 : 6;
             return 0;
           })
           .attr("stroke-width", function (d) {
-            // return d.parent ? 1 : 0;
             return 1;
           })
           .attr("stroke", function (d) {
-            // return d.children || d._children
-            //   ? "rgb(3, 192, 220)"
-            //   : "rgb(38, 222, 176)";
             return "rgb(3, 192, 220)";
           })
-          // .attr("stroke-dasharray", function (d) {
-          //   return d.children || d._children ? "0" : "2.2";
-          // })
-          // .attr("stroke-opacity", function (d) {
-          //   return d.children || d._children ? "1" : "0.6";
-          // })
           .attr("x", 0)
           .attr("y", -10)
           .attr("width", function (d) {
@@ -140,11 +128,6 @@
         nodeEnter
           .append("text")
           .style("fill", function (d) {
-            if (d.parent) {
-              // return d.children || d._children
-              //   ? "#ffffff"
-              //   : "rgb(38, 222, 176)";
-            }
             return "#ffffff";
           })
           .attr("dy", ".35em")
@@ -171,13 +154,11 @@
           .transition()
           .duration(duration)
           .attr("transform", function (d) {
-            console.log(source.y, source.x);
             return "translate(" + source.y + "," + source.x + ")";
           })
           .remove();
 
         nodeExit.select("rect").style("opacity", 1e-6);
-        // nodeExit.select("rect").attr("stroke-opacity", 1e-6);
         nodeExit.select("text").style("fill-opacity", 1e-6);
         var link = svg.selectAll("path.link").data(links, function (d) {
           return d.id;
@@ -230,17 +211,22 @@
             // Add new child node here
             let newNodeData = {
               name: "B4",
-              children: [{ name: "child" }],
+              children: [
+                { name: "B5" },
+                { name: "B6" },
+                { name: "B7", children: [{ name: "B8" }, { name: "B9" }] },
+              ],
             };
             let newNode = d3.hierarchy(newNodeData, function (d) {
               return d.children;
             });
 
-            d.height = 2;
             newNode.parent = d;
+            adjustDepth(newNode, d.depth + 1); // Adjusts the depth starting from 5
+            adjustHeight(d, newNode.height + 1); // Adjusts the height starting from 5
+
             newNode.descendants().forEach((node, index) => {
               node.id = generateRandomId();
-              node.depth = d.depth + 1 + index;
               node.y = node.depth * 180;
               node._children = node.children;
               node.children = null;
@@ -252,8 +238,7 @@
             // Push new node to children array
             d.children.push(newNode);
             d.data.children.push(newNode.data);
-
-            console.log("leaf node", d);
+            // mockApiCall().then((data) => console.log(data));
           }
           update(d);
         }
@@ -269,6 +254,35 @@
 
         // Return the complete ID.
         return `${padding}${randomBits}`;
+      }
+
+      function mockApiCall() {
+        return new Promise((resolve, reject) => {
+          // Simulate API call delay
+          setTimeout(() => {
+            const data = {
+              message: "Hello, this is a mock API call!",
+            };
+
+            // Simulate a successful API call
+            resolve(data);
+          }, 2000);
+        });
+      }
+
+      function adjustDepth(node, depthOffset) {
+        node.depth += depthOffset;
+        if (node.children) {
+          node.children.forEach((child) => adjustDepth(child, depthOffset));
+        }
+      }
+
+      function adjustHeight(node, heightOffset) {
+        // node.height += heightOffset;
+        node.height = heightOffset;
+        if (node.parent) {
+          adjustHeight(node.parent, heightOffset + 1);
+        }
       }
     </script>
   </body>
