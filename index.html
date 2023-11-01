@@ -48,25 +48,26 @@
         ],
       };
 
-      var margin = { top: 20, right: 90, bottom: 30, left: 90 },
+      var margin = { top: 100, right: 90, bottom: 30, left: 90 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
       var svg = d3
         .select("body")
         .append("svg")
-        .attr(
-          "width",
-          "100vw"
-          // width + margin.right + margin.left
-        )
-        .attr(
-          "height",
-          "100vh"
-          // height + margin.top + margin.bottom
-        )
+        .attr("width", "100vw")
+        .attr("height", "100vh")
         .call(
           d3.zoom().on("zoom", function () {
-            svg.attr("transform", d3.event.transform);
+            svg.attr(
+              "transform",
+              "translate(" +
+                (d3.event.transform.x + margin.left) +
+                "," +
+                (d3.event.transform.y + margin.top) +
+                ") scale(" +
+                d3.event.transform.k +
+                ")"
+            );
           })
         )
         .append("g")
@@ -75,7 +76,13 @@
       var i = 0,
         duration = 750,
         root;
-      var treemap = d3.tree().size([height, width]);
+      var treemap = d3
+        .tree()
+        .nodeSize([30, 70])
+        .separation(function (a, b) {
+          return a.parent == b.parent ? 1 : 2;
+        });
+
       root = d3.hierarchy(treeData, function (d) {
         return d.children;
       });
@@ -291,7 +298,6 @@
       }
 
       function adjustHeight(node, heightOffset) {
-        // node.height += heightOffset;
         node.height = heightOffset;
         if (node.parent) {
           adjustHeight(node.parent, heightOffset + 1);
