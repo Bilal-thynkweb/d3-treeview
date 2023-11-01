@@ -4,7 +4,7 @@
   <script src="https://d3js.org/d3.v4.js"></script>
   <body>
     <h2>D3.js Scatter-Plot</h2>
-
+    <svg id="d3-tree"></svg>
     <script>
       fetch("./data.json")
         .then((res) => res.json())
@@ -48,14 +48,13 @@
         ],
       };
 
-      var margin = { top: 100, right: 90, bottom: 30, left: 90 },
+      var margin = { top: 180, right: 90, bottom: 30, left: 90 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
       var svg = d3
-        .select("body")
-        .append("svg")
-        .attr("width", "100vw")
-        .attr("height", "100vh")
+        .select("#d3-tree")
+        .attr("width", "100%")
+        .attr("height", "25rem")
         .call(
           d3.zoom().on("zoom", function () {
             svg.attr(
